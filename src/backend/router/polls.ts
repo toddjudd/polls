@@ -5,9 +5,17 @@ import { z } from 'zod';
 
 export const pollRouter = trpc
   .router()
-  .query('getAll', {
+  .query('get-all', {
     async resolve() {
       return await prisma.pollQuestion.findMany();
+    },
+  })
+  .query('get-by-id', {
+    input: z.object({ id: z.string() }),
+    async resolve({ input: { id } }) {
+      return await prisma.pollQuestion.findFirst({
+        where: { id },
+      });
     },
   })
   .mutation('create', {

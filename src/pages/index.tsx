@@ -1,5 +1,6 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
+import Link from 'next/link';
 import React, { useState } from 'react';
 import { trpc } from '../utils/trpc';
 
@@ -27,12 +28,14 @@ const Home: NextPage = () => {
 };
 
 const Polls: NextPage = () => {
-  const { data, isLoading } = trpc.useQuery(['polls.getAll']);
+  const { data, isLoading } = trpc.useQuery(['polls.get-all']);
   if (isLoading || !data) return <div>Loading...</div>;
   return (
     <div>
-      {data.map(({ question }, i) => (
-        <div key={i}>{question}</div>
+      {data.map(({ question, id }, i) => (
+        <Link key={i} href={`/poll/${id}`}>
+          <div key={i}>{question}</div>
+        </Link>
       ))}
     </div>
   );
@@ -43,7 +46,7 @@ const PollForm: React.FC = () => {
   const client = trpc.useContext();
   const { mutate, isLoading } = trpc.useMutation(['polls.create'], {
     onSuccess: () => {
-      client.invalidateQueries(['polls.getAll']);
+      client.invalidateQueries(['polls.get-all']);
       setQuestion('');
     },
   });

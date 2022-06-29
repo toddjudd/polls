@@ -1,7 +1,7 @@
 import * as trpc from '@trpc/server';
 
 import superjson from 'superjson';
-import { pollRouter } from './questions';
+import { pollRouter } from './polls';
 
 export const appRouter = trpc
   .router()
