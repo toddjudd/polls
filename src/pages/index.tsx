@@ -1,18 +1,8 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
+import { trpc } from '../utils/trpc';
 
-import { prisma } from '../db/client';
-
-export const getServerSideProps = async () => {
-  const questions = await prisma.pollQuestion.findMany();
-  return {
-    props: {
-      questions: JSON.stringify(questions, null, 2),
-    },
-  };
-};
-
-const Home: NextPage = (props: any) => {
+const Home: NextPage = () => {
   return (
     <div>
       <Head>
@@ -25,10 +15,16 @@ const Home: NextPage = (props: any) => {
       </Head>
       <main>
         <h1 className='text-2xl font-bold'>Welcome to the polls app</h1>
-        <code>{props.questions}</code>
+        <Polls />
       </main>
     </div>
   );
+};
+
+const Polls: NextPage = () => {
+  const { data, isLoading } = trpc.useQuery(['getPollQuestions']);
+  if (isLoading || !data) return <div>Loading...</div>;
+  return <div>{JSON.stringify(data)}</div>;
 };
 
 export default Home;
