@@ -13,9 +13,21 @@ datasource db {
 }
 
 model PollQuestion {
-  id        String    @id @default(cuid())
-  question  String    @db.VarChar(5000)
-  endsAt    DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now())
+  id       String    @id @default(cuid())
+  question String    @db.VarChar(5000)
+  endsAt   DateTime?
+  options  Json
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  Vote      Vote[]
+}
+
+model Vote {
+  id        String       @id @default(cuid())
+  pollId    String
+  poll      PollQuestion @relation(fields: [pollId], references: [id])
+  choice    Int
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @default(now())
 }
