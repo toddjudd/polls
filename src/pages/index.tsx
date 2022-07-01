@@ -29,7 +29,9 @@ const Home: NextPage = () => {
 
 const Polls: NextPage = () => {
   const { data, isLoading } = trpc.useQuery(['polls.get-all']);
+  console.log(data);
   if (isLoading || !data) return <div>Loading...</div>;
+  if (!isLoading && data.length === 0) return <div>No polls yet</div>;
   return (
     <div>
       {data.map(({ question, id }, i) => (
