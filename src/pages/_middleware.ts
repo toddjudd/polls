@@ -1,6 +1,13 @@
-import type { NextFetchEvent, NextRequest } from 'next/server';
+// middleware.ts
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { nanoid } from 'nanoid';
 
-export function middleware(request: NextRequest, ev: NextFetchEvent) {
-  console.log('Request: ', request);
-  console.log('Event: ', ev);
+export function middleware(req: NextRequest) {
+  if (req.cookies['poll-user-token']) return;
+
+  const res = NextResponse.next();
+  res.cookie('poll-user-token', nanoid(), { sameSite: 'strict' });
+
+  return res;
 }

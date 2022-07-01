@@ -13,14 +13,16 @@ datasource db {
 }
 
 model PollQuestion {
-  id       String    @id @default(cuid())
-  question String    @db.VarChar(5000)
-  endsAt   DateTime?
-  options  Json
+  id         String    @id @default(cuid())
+  question   String    @db.VarChar(5000)
+  endsAt     DateTime?
+  options    Json
+  ownerToken String    @db.VarChar(255)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @default(now())
+  Vote       Vote[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-  Vote      Vote[]
+  @@index([ownerToken])
 }
 
 model Vote {

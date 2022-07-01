@@ -9,6 +9,7 @@ const PollPageContent: React.FC<{ id: string }> = ({ id }) => {
   if (!isLoading && !data) return <div>Question not found</div>;
   return (
     <div>
+      {data?.isOwner && <div>You are the owner of this poll</div>}
       <h1>{data?.question}</h1>
       <Options options={data?.options as string[]} />
     </div>

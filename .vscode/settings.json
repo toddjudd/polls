@@ -36,5 +36,6 @@
     "!yaml",
     "!yml",
     "markdown-math"
-  ]
+  ],
+  "conventionalCommits.scopes": ["auth"]
 }

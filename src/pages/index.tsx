@@ -28,8 +28,7 @@ const Home: NextPage = () => {
 };
 
 const Polls: NextPage = () => {
-  const { data, isLoading } = trpc.useQuery(['polls.get-all']);
-  console.log(data);
+  const { data, isLoading } = trpc.useQuery(['polls.get-all-by-user']);
   if (isLoading || !data) return <div>Loading...</div>;
   if (!isLoading && data.length === 0) return <div>No polls yet</div>;
   return (
@@ -48,8 +47,9 @@ const PollForm: React.FC = () => {
   const client = trpc.useContext();
   const { mutate, isLoading } = trpc.useMutation(['polls.create'], {
     onSuccess: () => {
-      client.invalidateQueries(['polls.get-all']);
+      client.invalidateQueries(['polls.get-all-by-user']);
       setQuestion('');
+      inputRef?.current?.focus();
     },
   });
   const [question, setQuestion] = useState('');
