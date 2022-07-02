@@ -5,8 +5,6 @@ import * as trpcNext from '@trpc/server/adapters/next';
 export async function createContext(opts?: trpcNext.CreateNextContextOptions) {
   // Create your context based on the request object
   // Will be available as `ctx` in all your resolvers
-  console.log(opts?.req);
-  console.log(opts?.req.cookies['poll-user-token']);
   return {
     ownerToken: opts?.req.cookies['poll-user-token'] || '',
   };

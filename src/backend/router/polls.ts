@@ -12,6 +12,7 @@ export const pollRouter = createRouter()
   })
   .query('get-all-by-user', {
     async resolve({ ctx: { ownerToken } }) {
+      if (!ownerToken) return [];
       return await prisma.pollQuestion.findMany({
         where: { ownerToken },
       });
