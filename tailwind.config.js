@@ -6,5 +6,5 @@ module.exports = {
       Pangolin: ['Pangolin', 'sans-serif', 'ui-sans-serif', 'system-ui'],
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/forms')],
 };
