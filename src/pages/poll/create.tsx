@@ -2,6 +2,7 @@ import {
   Field,
   Form,
   Formik,
+  FormikHelpers,
   FormikProps,
   useFormik,
   withFormik,
@@ -10,18 +11,23 @@ import { toFormikValidationSchema } from 'zod-formik-adapter';
 import React, { useState } from 'react';
 import { Layout } from '../../components/layout';
 import { trpc } from '../../utils/trpc';
-import { createQuestionValidator } from '../../shared/create-question-validator';
+import {
+  CreateQuestionInputType,
+  createQuestionValidator,
+} from '../../shared/create-question-validator';
 import { PollQuestion } from '@prisma/client';
+import { useRouter } from 'next/router';
 
 const CreatePoll: React.FC = () => {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const client = trpc.useContext();
-  const { mutateAsync, isLoading } = trpc.useMutation(['polls.create'], {
+  const { mutateAsync, isLoading, data } = trpc.useMutation(['polls.create'], {
     onSuccess: () => {
       client.invalidateQueries(['polls.get-all-by-user']);
     },
   });
   const [question, setQuestion] = useState('');
+  const router = useRouter();
 
   return (
     <Layout title='Polls'>
@@ -30,18 +36,19 @@ const CreatePoll: React.FC = () => {
           question: '',
         }}
         validationSchema={toFormikValidationSchema(createQuestionValidator)}
-        onSubmit={async (values, { resetForm, setSubmitting, setErrors }) => {
+        onSubmit={async (
+          values,
+          {
+            resetForm,
+            setSubmitting,
+            setErrors,
+          }: FormikHelpers<CreateQuestionInputType>
+        ) => {
           await mutateAsync(
             { question: values.question },
             {
               onSuccess: (data, variables, context) => {
-                if ((data as PollQuestion).id) {
-                  document.location.href = `/poll/${(data as PollQuestion).id}`;
-                  return;
-                }
-                setErrors({ question: 'Error creating poll' });
-                resetForm();
-                setSubmitting(false);
+                router.push(`/poll/${(data as PollQuestion).id}`);
               },
               onError: () => {
                 setErrors({ question: 'Error creating poll' });
@@ -62,7 +69,7 @@ const CreatePoll: React.FC = () => {
               <Field
                 id='question'
                 name='question'
-                disabled={isSubmitting || isLoading}
+                disabled={isSubmitting || isLoading || !!data}
                 placeholder='Why is Next.js the best?'
                 className='rounded text-zinc-800 form-input'
               />
@@ -71,9 +78,9 @@ const CreatePoll: React.FC = () => {
               )}
               <button
                 type='submit'
-                disabled={isSubmitting || isLoading}
+                disabled={isSubmitting || isLoading || !!data}
                 className='bg-zinc-300 text-zinc-700 rounded-sm p-1'>
-                {isSubmitting || isLoading ? 'Submitting..' : 'Submit'}
+                {isSubmitting || isLoading || data ? 'Submitting..' : 'Submit'}
               </button>
             </Form>
           );

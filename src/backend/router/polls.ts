@@ -31,7 +31,7 @@ export const pollRouter = createRouter()
   .mutation('create', {
     input: createQuestionValidator,
     async resolve({ input, ctx }) {
-      if (!ctx.ownerToken) return { error: 'Unauthorized', status: 401 };
+      if (!ctx.ownerToken) throw new Error('Unauthorized');
       return await prisma.pollQuestion.create({
         data: {
           question: input.question,
