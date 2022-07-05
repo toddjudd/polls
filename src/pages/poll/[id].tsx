@@ -1,6 +1,7 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
+import { Layout } from '../../components/layout';
 import { trpc } from '../../utils/trpc';
 
 const PollPageContent: React.FC<{ id: string }> = ({ id }) => {
@@ -8,7 +9,7 @@ const PollPageContent: React.FC<{ id: string }> = ({ id }) => {
   if (isLoading) return <div>Loading...</div>;
   if (!isLoading && !data) return <div>Question not found</div>;
   return (
-    <div>
+    <div className='p-4'>
       {data?.isOwner && <div>You are the owner of this poll</div>}
       <h1>{data?.question}</h1>
       <Options options={data?.options as string[]} />
@@ -33,10 +34,9 @@ const PollPage: NextPage = () => {
   if (!id || typeof id !== 'string') return <div>No ID</div>;
 
   return (
-    <div>
-      <h1>Poll Page</h1>
+    <Layout title='Poll'>
       <PollPageContent id={id} />
-    </div>
+    </Layout>
   );
 };
 
