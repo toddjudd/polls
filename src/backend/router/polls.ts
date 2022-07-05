@@ -35,7 +35,7 @@ export const pollRouter = createRouter()
       return await prisma.pollQuestion.create({
         data: {
           question: input.question,
-          options: [],
+          options: input.options,
           ownerToken: ctx.ownerToken,
         },
       });
