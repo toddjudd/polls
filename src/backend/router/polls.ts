@@ -3,6 +3,7 @@ import { prisma } from '../../db/client';
 import { z } from 'zod';
 import { createRouter } from './context';
 import { createNextApiHandler } from '@trpc/server/adapters/next';
+import { createQuestionValidator } from '../../shared/create-question-validator';
 
 export const pollRouter = createRouter()
   .query('get-all', {
@@ -28,9 +29,7 @@ export const pollRouter = createRouter()
     },
   })
   .mutation('create', {
-    input: z.object({
-      question: z.string(),
-    }),
+    input: createQuestionValidator,
     async resolve({ input, ctx }) {
       if (!ctx.ownerToken) return { error: 'Unauthorized', status: 401 };
       return await prisma.pollQuestion.create({
