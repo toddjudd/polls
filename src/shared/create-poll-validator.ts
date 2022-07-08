@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const createQuestionValidator = z.object({
+export const createPollValidator = z.object({
   question: z.string().min(5).max(500),
   options: z
     .array(z.string().min(2).max(100))
@@ -8,4 +8,4 @@ export const createQuestionValidator = z.object({
     .max(40, { message: 'Options must have less than 40 entries' }),
 });
 
-export type CreateQuestionInputType = z.infer<typeof createQuestionValidator>;
+export type CreatePollInputType = z.infer<typeof createPollValidator>;

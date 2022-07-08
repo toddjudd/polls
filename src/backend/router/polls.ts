@@ -3,7 +3,8 @@ import { prisma } from '../../db/client';
 import { z } from 'zod';
 import { createRouter } from './context';
 import { createNextApiHandler } from '@trpc/server/adapters/next';
-import { createQuestionValidator } from '../../shared/create-question-validator';
+import { createPollValidator } from '../../shared/create-poll-validator';
+import { createVoteValidator } from '../../shared/create-vote-validator';
 
 export const pollRouter = createRouter()
   .query('get-all', {
@@ -25,11 +26,25 @@ export const pollRouter = createRouter()
       const poll = await prisma.pollQuestion.findFirst({
         where: { id },
       });
-      return { ...poll, isOwner: poll?.ownerToken === ctx.ownerToken };
+      const myVotes = await prisma.vote.findMany({
+        where: { pollId: id, voterToken: ctx.ownerToken },
+      });
+      let votes = await prisma.vote.groupBy({
+        where: { pollId: id },
+        by: ['choice'],
+        _count: true,
+      });
+      return {
+        ...poll,
+        isOwner: poll?.ownerToken === ctx.ownerToken,
+        hasVoted: myVotes.length > 0,
+        myVotes,
+        votes,
+      };
     },
   })
   .mutation('create', {
-    input: createQuestionValidator,
+    input: createPollValidator,
     async resolve({ input, ctx }) {
       if (!ctx.ownerToken) throw new Error('Unauthorized');
       return await prisma.pollQuestion.create({
@@ -37,6 +52,19 @@ export const pollRouter = createRouter()
           question: input.question,
           options: input.options,
           ownerToken: ctx.ownerToken,
+        },
+      });
+    },
+  })
+  .mutation('vote', {
+    input: createVoteValidator,
+    async resolve({ input, ctx }) {
+      if (!ctx.ownerToken) throw new Error('Unauthorized');
+      return await prisma.vote.create({
+        data: {
+          pollId: input.pollId,
+          choice: input.choice,
+          voterToken: ctx.ownerToken,
         },
       });
     },

@@ -4,27 +4,39 @@ import React from 'react';
 import { Layout } from '../../components/layout';
 import { trpc } from '../../utils/trpc';
 
-const Options: React.FC<{ options: string[] }> = ({ options }) => {
-  return (
-    <>
-      {options.map((option, i) => (
-        <div key={i} className='bg-zinc-300 text-zinc-800 p-2 rounded-md'>
-          {option}
-        </div>
-      ))}
-    </>
-  );
-};
-
 const PollPageContent: React.FC<{ id: string }> = ({ id }) => {
+  const client = trpc.useContext();
   const { data, isLoading } = trpc.useQuery(['polls.get-by-id', { id }]);
+  const { mutate } = trpc.useMutation('polls.vote', {
+    onSuccess: () => {
+      client.invalidateQueries(['polls.get-by-id']);
+    },
+  });
   if (isLoading) return <div>Loading...</div>;
   if (!isLoading && !data) return <div>Question not found</div>;
   return (
     <div className='p-4 grid gap-2 max-w-2xl m-[auto]'>
-      {/* {data?.isOwner && <div>You are the owner of this poll</div>} */}
       <div className='justify-self-center text-4xl'>{data?.question}</div>
-      <Options options={data?.options as string[]} />
+      {(data?.options as string[])?.map((option, i) => (
+        <div
+          key={i}
+          className={`flex justify-between bg-zinc-300 text-zinc-800 p-2 rounded-md ${
+            data?.myVotes?.findIndex((vote) => vote.choice === i) >= 0
+              ? 'border-zinc-800 border-4'
+              : ''
+          }`}
+          onClick={() => {
+            if (data?.hasVoted) return;
+            mutate({ pollId: id, choice: i });
+          }}>
+          <span>{option}</span>
+          <span>
+            Votes:{' '}
+            {data?.votes?.[data?.votes?.findIndex((vote) => vote.choice === i)]
+              ?._count || 0}
+          </span>
+        </div>
+      ))}
     </div>
   );
 };

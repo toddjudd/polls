@@ -14,9 +14,9 @@ import React, { useEffect, useState } from 'react';
 import { Layout } from '../../components/layout';
 import { trpc } from '../../utils/trpc';
 import {
-  CreateQuestionInputType,
-  createQuestionValidator,
-} from '../../shared/create-question-validator';
+  CreatePollInputType,
+  createPollValidator,
+} from '../../shared/create-poll-validator';
 import { PollQuestion } from '@prisma/client';
 import { useRouter } from 'next/router';
 
@@ -35,20 +35,21 @@ const Button = ({ children, ...props }: any) => {
 };
 
 const Options: React.FC<{
-  values: CreateQuestionInputType;
+  values: CreatePollInputType;
   helpers: FieldArrayRenderProps;
 }> = ({ values, helpers: { push, remove } }) => {
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const [touched, setTouched] = useState(false);
+  const [touched, setTouched] = useState(0);
   useEffect(() => {
-    if (inputRef.current && touched) {
+    console.log(inputRef.current);
+    if (inputRef.current && touched > 0) {
       inputRef.current?.focus();
     }
   }, [touched]);
   return (
-    <div className='grid grid-cols-[1fr_auto] gap-2'>
+    <div className='flex flex-col gap-2'>
       {values.options.map((_, i, { length }) => (
-        <>
+        <div key={i} className='grid grid-cols-[1fr_auto] gap-2'>
           <Field
             key={i}
             name={`options.${i}`}
@@ -59,17 +60,17 @@ const Options: React.FC<{
           <Button
             onClick={() => {
               remove(i);
-              setTouched(true);
+              setTouched(touched + 1);
             }}>
             -
           </Button>
-        </>
+        </div>
       ))}
       <Button
-        className='col-start-2'
+        className='self-start'
         onClick={() => {
           push('');
-          setTouched(true);
+          setTouched(touched + 1);
         }}>
         +
       </Button>
@@ -93,14 +94,14 @@ const CreatePoll: React.FC = () => {
           question: '',
           options: ['', ''],
         }}
-        validationSchema={toFormikValidationSchema(createQuestionValidator)}
+        validationSchema={toFormikValidationSchema(createPollValidator)}
         onSubmit={async (
           values,
           {
             resetForm,
             setSubmitting,
             setErrors,
-          }: FormikHelpers<CreateQuestionInputType>
+          }: FormikHelpers<CreatePollInputType>
         ) => {
           await mutateAsync(
             { ...values },

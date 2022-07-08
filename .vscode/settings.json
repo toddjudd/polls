@@ -37,5 +37,12 @@
     "!yml",
     "markdown-math"
   ],
-  "conventionalCommits.scopes": ["auth", "gitignore", "ssr", "polls", "trpc"]
+  "conventionalCommits.scopes": [
+    "auth",
+    "gitignore",
+    "ssr",
+    "polls",
+    "trpc",
+    "votes"
+  ]
 }
