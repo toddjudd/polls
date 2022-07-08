@@ -12,8 +12,10 @@ const PollPageContent: React.FC<{ id: string }> = ({ id }) => {
       client.invalidateQueries(['polls.get-by-id']);
     },
   });
-  if (isLoading) return <div>Loading...</div>;
-  if (!isLoading && !data) return <div>Question not found</div>;
+  if (isLoading)
+    return <div className='p-4 flex justify-center'>Loading...</div>;
+  if (!isLoading && !data?.id)
+    return <div className='p-4 flex justify-center'>Question not found</div>;
   return (
     <div className='p-4 grid gap-2 max-w-2xl m-[auto]'>
       <div className='justify-self-center text-4xl'>{data?.question}</div>
