@@ -19,7 +19,7 @@ const PollPageContent: React.FC<{ id: string }> = ({ id }) => {
   return (
     <div className='p-4 grid gap-2 max-w-2xl m-[auto]'>
       <div className='justify-self-center text-4xl'>{data?.question}</div>
-      {(data?.options as string[])?.map((option, i) => (
+      {(data?.options as { text: string }[])?.map((option, i) => (
         <div
           key={i}
           className={`flex justify-between bg-zinc-300 text-zinc-800 p-2 rounded-md ${
@@ -31,7 +31,7 @@ const PollPageContent: React.FC<{ id: string }> = ({ id }) => {
             if (data?.hasVoted) return;
             mutate({ pollId: id, choice: i });
           }}>
-          <span>{option}</span>
+          <span>{option.text}</span>
           <span>
             Votes:{' '}
             {data?.votes?.[data?.votes?.findIndex((vote) => vote.choice === i)]
