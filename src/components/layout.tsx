@@ -35,8 +35,8 @@ export const Layout: React.FC<{
           </Link>
         </div>
       </nav>
-      <main className='grid grid-cols-[auto_1fr] justify-stretch max-w-6xl m-auto'>
-        <section className='block'>
+      <main className='grid grid-colls-1 lg:grid-cols-[auto_1fr] justify-stretch max-w-7xl m-auto'>
+        <section className=' hidden lg:block'>
           <div className='w-[200px] flex felx-col p-4 sticky top-[69px]'>
             <Link href='/'>
               <span className='flex justify-center gap-4 w-full'>
