@@ -49,21 +49,34 @@ export const pollRouter = createRouter()
     async resolve({ input: { id }, ctx }) {
       const poll = await prisma.pollQuestion.findFirst({
         where: { id },
+        include: { Vote: true },
       });
       const myVotes = await prisma.vote.findMany({
         where: { pollId: id, voterToken: ctx.ownerToken },
       });
-      const votes = await prisma.vote.groupBy({
+      const voteCount = await prisma.vote.groupBy({
         where: { pollId: id },
         by: ['choice'],
         _count: true,
       });
+      const voteResults = (poll?.options as { text: string }[])?.map(
+        (option, index) => {
+          const count = voteCount?.find(
+            (vote) => vote.choice === index
+          )?._count;
+          const percentage =
+            count && poll?.Vote?.length
+              ? (count / poll?.Vote?.length) * 100
+              : 0;
+          return { count, percentage, text: option.text };
+        }
+      );
       return {
         ...poll,
         isOwner: poll?.ownerToken === ctx.ownerToken,
         hasVoted: myVotes.length > 0,
         myVotes,
-        votes,
+        voteResults,
       };
     },
   })
