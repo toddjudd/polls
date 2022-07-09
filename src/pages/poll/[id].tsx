@@ -4,7 +4,11 @@ import React from 'react';
 import { Layout } from '../../components/layout';
 import { trpc } from '../../utils/trpc';
 
-const PollPageContent: React.FC<{ id: string }> = ({ id }) => {
+const Poll: NextPage = () => {
+  const {
+    query: { id, options },
+  } = useRouter();
+  if (!id || typeof id !== 'string') return <div>No ID</div>;
   const client = trpc.useContext();
   const { data, isLoading } = trpc.useQuery(['polls.get-by-id', { id }]);
   const { mutate } = trpc.useMutation('polls.vote', {
@@ -43,17 +47,4 @@ const PollPageContent: React.FC<{ id: string }> = ({ id }) => {
   );
 };
 
-const PollPage: NextPage = () => {
-  const {
-    query: { id, options },
-  } = useRouter();
-  if (!id || typeof id !== 'string') return <div>No ID</div>;
-
-  return (
-    <Layout title='Poll'>
-      <PollPageContent id={id} />
-    </Layout>
-  );
-};
-
-export default PollPage;
+export default Poll;

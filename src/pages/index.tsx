@@ -19,20 +19,6 @@ import {
   ChevronRightIcon,
 } from '@heroicons/react/solid';
 
-// eslint-disable-next-line react/display-name
-const NextLink = forwardRef<
-  HTMLAnchorElement,
-  LinkProps & HTMLProps<HTMLAnchorElement>
->(({ href, children, ...rest }, ref) => {
-  return (
-    <Link href={href}>
-      <a ref={ref} {...rest}>
-        {children}
-      </a>
-    </Link>
-  );
-});
-
 const PollCardContextMenu: React.FC<{ id: string }> = ({ id }) => {
   const context = trpc.useContext();
   const { mutate, data, isLoading } = trpc.useMutation('polls.delete-by-id', {
@@ -58,22 +44,22 @@ const PollCardContextMenu: React.FC<{ id: string }> = ({ id }) => {
                 static
                 className='absolute top-0 right-0 w-40  origin-top-right bg-zinc-500 rounded-md shadow-lg outline-none z-10 -translate-y-2 translate-x-2'>
                 <Menu.Button className='px-4 py-3 flex justify-end w-full z-10'>
-                  <ChevronRightIcon className='h-5 w-5 text-zinc-800' />
+                  <ChevronRightIcon className='h-5 w-5 ' />
                 </Menu.Button>
                 <Menu.Button
                   className='px-4 py-3 flex justify-between w-full z-10'
                   onClick={() => {
                     mutate({ id });
                   }}>
-                  <p className='text-sm text-red-500 font-medium leading-5 truncate'>
+                  <p className='text-sm text-red-400 font-medium leading-5 truncate'>
                     Delete
                   </p>
-                  <TrashIcon className='h-5 w-5 text-red-500' />
+                  <TrashIcon className='h-5 w-5 text-red-400' />
                 </Menu.Button>
               </Menu.Items>
             </Transition>
-            <Menu.Button className='p-1 bg-zinc-500 rounded-full'>
-              <DotsVerticalIcon className='h-5 w-5 text-zinc-800 ' />
+            <Menu.Button className='p-1'>
+              <DotsVerticalIcon className='h-5 w-5 ' />
             </Menu.Button>
           </>
         )}
@@ -174,14 +160,6 @@ const PollFilterList = () => {
   );
 };
 
-const Home: NextPage = () => {
-  return (
-    <Layout title='Polls'>
-      <Polls />
-    </Layout>
-  );
-};
-
 const PollCard: React.FC<PollQuestion> = ({ id, question }) => {
   return (
     <div
@@ -223,4 +201,4 @@ const Polls: NextPage = () => {
   );
 };
 
-export default Home;
+export default Polls;

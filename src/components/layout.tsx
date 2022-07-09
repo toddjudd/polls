@@ -22,7 +22,7 @@ export const Layout: React.FC<{
           <Link rel='stylesheet' href='/'>
             <span className='flex gap-2 text-4xl items-center'>
               <ChatAlt2Icon className='h-10 w-10 text-amber-500' />
-              <span>Soda Vote</span>
+              <span>SodaVote</span>
             </span>
           </Link>
           <Link href='/poll/create'>
@@ -31,7 +31,7 @@ export const Layout: React.FC<{
             </span>
           </Link>
           <Link href='/'>
-            <span className='flex justify-center items-center'>View Poll</span>
+            <span className='flex justify-center items-center'>View Polls</span>
           </Link>
         </div>
       </nav>

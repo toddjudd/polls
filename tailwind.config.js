@@ -4,6 +4,9 @@ module.exports = {
     extend: {},
     fontFamily: {
       Pangolin: ['Pangolin', 'sans-serif', 'ui-sans-serif', 'system-ui'],
+      Roboto: ['Roboto', 'sans-serif', 'ui-sans-serif', 'system-ui'],
+      Montserrat: ['Montserrat', 'sans-serif', 'ui-sans-serif', 'system-ui'],
+      Inter: ['Inter', 'sans-serif', 'ui-sans-serif', 'system-ui'],
     },
   },
   plugins: [require('@tailwindcss/forms')],

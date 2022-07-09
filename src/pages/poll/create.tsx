@@ -127,53 +127,49 @@ const CreatePoll: React.FC = () => {
   let disabled = isSubmitting || isLoading || !!data;
 
   return (
-    <Layout title='Polls'>
-      <form
-        onSubmit={handleSubmit(onValid, (errors) => {
-          console.log(errors);
-        })}
-        className='grid gap-2 p-4'>
-        {/* <label htmlFor='question' className='text-lg'>
+    <form
+      onSubmit={handleSubmit(onValid, (errors) => {
+        console.log(errors);
+      })}
+      className='grid gap-2 p-4'>
+      {/* <label htmlFor='question' className='text-lg'>
           Question
         </label> */}
-        <label className='label'>
-          <span className='label-text font-semibold text-base'>
-            Your Question
-          </span>
-        </label>
-        <input
-          {...register('question', { disabled })}
-          type='text'
-          className='rounded text-zinc-800 form-input '
-          placeholder='How do magnets work?'
-        />
-        {errors.question && (
-          <p className='text-red-400 text-sm'>{errors.question.message}</p>
-        )}
-        <label className='label'>
-          <span className='label-text font-semibold text-base'>
-            Add options
-          </span>
-        </label>
-        {errors.options?.message && (
-          <p className='text-red-400 text-sm'>{errors.options?.message}</p>
-        )}
-        <Options
-          control={control}
-          register={register}
-          errors={errors}
-          trigger={trigger}
-          disabled={disabled}
-          touchedFields={touchedFields}
-        />
-        <button
-          type='submit'
-          disabled={disabled}
-          className='bg-zinc-300 text-zinc-700 rounded-sm p-1'>
-          {disabled ? 'Submitting..' : 'Submit'}
-        </button>
-      </form>
-    </Layout>
+      <label className='label'>
+        <span className='label-text font-semibold text-base'>
+          Your Question
+        </span>
+      </label>
+      <input
+        {...register('question', { disabled })}
+        type='text'
+        className='rounded text-zinc-800 form-input '
+        placeholder='How do magnets work?'
+      />
+      {errors.question && (
+        <p className='text-red-400 text-sm'>{errors.question.message}</p>
+      )}
+      <label className='label'>
+        <span className='label-text font-semibold text-base'>Add options</span>
+      </label>
+      {errors.options?.message && (
+        <p className='text-red-400 text-sm'>{errors.options?.message}</p>
+      )}
+      <Options
+        control={control}
+        register={register}
+        errors={errors}
+        trigger={trigger}
+        disabled={disabled}
+        touchedFields={touchedFields}
+      />
+      <button
+        type='submit'
+        disabled={disabled}
+        className='bg-zinc-300 text-zinc-700 rounded-sm p-1'>
+        {disabled ? 'Submitting..' : 'Submit'}
+      </button>
+    </form>
   );
 };
 

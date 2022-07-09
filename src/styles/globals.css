@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Pangolin&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Inter&family=Roboto&family=Pangolin&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-  @apply bg-zinc-700 text-white;
+  @apply bg-zinc-700 text-white font-Inter;
 }
