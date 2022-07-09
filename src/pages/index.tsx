@@ -80,13 +80,13 @@ const PollFilterList: React.FC<{
             <>
               <div className='relative'>
                 <span className='inline-block w-full rounded-md shadow-sm'>
-                  <Listbox.Button className='bg-zinc-500 text-zinc-300 cursor-default relative w-full rounded-md border border-zinc-500 pl-3 pr-10 py-2 text-left focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition ease-in-out duration-150 sm:text-sm sm:leading-5'>
+                  <Listbox.Button className='bg-zinc-500  cursor-default relative w-full rounded-md border border-zinc-500 pl-3 pr-10 py-2 text-left focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition ease-in-out duration-150 sm:text-sm sm:leading-5'>
                     <span className='block truncate'>
                       {selectedFilter.filter}
                     </span>
                     <span className='absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none'>
                       <svg
-                        className='h-5 w-5 text-zinc-300'
+                        className='h-5 w-5 '
                         viewBox='0 0 20 20'
                         fill='none'
                         stroke='currentColor'>
@@ -190,14 +190,15 @@ const Polls: NextPage = () => {
   useEffect(() => {
     context.invalidateQueries('polls.get-all');
   }, [context, selectedFilter.filter]);
+
   if (isLoading || !data) {
-    return <div className='p-4 py-10'>Loading...</div>;
-  }
-  if (!isLoading && data.length === 0) {
     return (
-      <div className='p-4 py-10 flex flex-col gap-4 align-middle justify-around max-w-md'>
-        <div>No polls yet</div>
-        {/* <PollForm /> */}
+      <div className='max-w-4xl flex-1 bg-zinc-600 m-8 rounded-lg '>
+        <div className='flex flex-col'>
+          <div className='p-4 border-b border-zinc-300 last-of-type:border-0 flex justify-between'>
+            <div className='text-xl font-bold'>Loading</div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -210,7 +211,20 @@ const Polls: NextPage = () => {
             {...{ filters: filters.current, selectedFilter, setSelectedFilter }}
           />
         </div>
-        {data.map((poll) => PollCard(poll))}
+        {!isLoading && data.length === 0 ? (
+          <div className='p-4 flex flex-col justify-center items-center gap-4'>
+            <div className='font-bold'>
+              No {selectedFilter.filter} polls yet
+            </div>
+            <Link href={`/poll/create`}>
+              <button className='rounded-md px-4 py-1 bg-amber-500'>
+                Create Poll
+              </button>
+            </Link>
+          </div>
+        ) : (
+          data.map((poll) => PollCard(poll))
+        )}
       </div>
     </div>
   );
