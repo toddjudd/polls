@@ -1,7 +1,7 @@
+import { HomeIcon, ChatAlt2Icon } from '@heroicons/react/solid';
 import Head from 'next/head';
 import Link from 'next/link';
 import { ReactNode } from 'react';
-import { HomeIcon, ChatAlt2Icon } from '@heroicons/react/solid';
 
 export const Layout: React.FC<{
   title?: string;
@@ -17,8 +17,8 @@ export const Layout: React.FC<{
         />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <nav className='sticky top-0 bg-zinc-700 border-b-[1px] border-b-zinc-300 z-50 h-16'>
-        <div className='flex gap-8 items-stretch font-bold h-full'>
+      <nav className='sticky top-0 bg-zinc-700 border-b-[1px] border-b-zinc-300 z-50 h-16 flex justify-around'>
+        <div className='flex gap-8 items-stretch font-bold h-full px-8 max-w-7xl flex-1'>
           <Link rel='stylesheet' href='/'>
             <span className='flex gap-2 text-4xl items-center'>
               <ChatAlt2Icon className='h-10 w-10 text-amber-500' />

@@ -1,3 +1,5 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/router';
 import {
   Control,
   DeepRequired,
@@ -9,14 +11,12 @@ import {
   UseFormRegister,
   UseFormTrigger,
 } from 'react-hook-form';
-import { Layout } from '../../components/layout';
-import { trpc } from '../../utils/trpc';
+
 import {
   CreatePollInputType,
   createPollValidator,
 } from '../../shared/create-poll-validator';
-import { useRouter } from 'next/router';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { trpc } from '../../utils/trpc';
 
 const Button = ({ children, ...props }: any) => {
   return (
@@ -40,22 +40,20 @@ const Options: React.FC<{
   disabled: boolean;
   touchedFields: FieldNamesMarkedBoolean<CreatePollInputType>;
 }> = ({ control, register, errors, trigger, disabled, touchedFields }) => {
-  const { fields, append, prepend, remove, swap, move, insert } =
-    useFieldArray<CreatePollInputType>({
-      name: 'options',
-      control,
-    });
+  const { fields, append, remove } = useFieldArray<CreatePollInputType>({
+    name: 'options',
+    control,
+  });
 
   return (
     <div className='flex flex-col gap-2'>
-      {fields.map((field, i, { length }) => (
+      {fields.map((field, i) => (
         <div key={field.id} className='grid grid-cols-[1fr_auto] gap-2'>
           <input
             {...register(`options.${i}.text`, { disabled })}
             type='text'
             className='rounded text-zinc-800 form-input '
             placeholder={`Option ${i + 1}`}
-            // ref={i + 1 === length ? focusRef : null}
           />
           <Button
             onClick={() => {
@@ -91,12 +89,10 @@ const CreatePoll: React.FC = () => {
   const router = useRouter();
   const {
     register,
-    watch,
     handleSubmit,
     control,
     setError,
     formState: { errors, isSubmitting, touchedFields },
-    getValues,
     trigger,
   } = useForm<CreatePollInputType>({
     mode: 'onBlur',
@@ -108,13 +104,13 @@ const CreatePoll: React.FC = () => {
 
   const { mutate, isLoading, data } = trpc.useMutation(['polls.create'], {
     onSuccess: () => {
-      client.invalidateQueries(['polls.get-all-by-user']);
+      client.invalidateQueries(['polls.get-all']);
     },
   });
 
   const onValid: SubmitHandler<CreatePollInputType> = (data) => {
     mutate(data, {
-      onSuccess(data, variables, context) {
+      onSuccess(data) {
         router.push(`/poll/${data.id}`);
       },
       onError: () => {
@@ -124,7 +120,7 @@ const CreatePoll: React.FC = () => {
     });
   };
 
-  let disabled = isSubmitting || isLoading || !!data;
+  const disabled = isSubmitting || isLoading || !!data;
 
   return (
     <form

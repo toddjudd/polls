@@ -1,22 +1,46 @@
-import * as trpc from '@trpc/server';
-import { prisma } from '../../db/client';
 import { z } from 'zod';
-import { createRouter } from './context';
-import { createNextApiHandler } from '@trpc/server/adapters/next';
+
+import { prisma } from '../../db/client';
 import { createPollValidator } from '../../shared/create-poll-validator';
 import { createVoteValidator } from '../../shared/create-vote-validator';
+import { pollFilterValidator } from '../../shared/poll-filter-validator';
+
+import { createRouter } from './context';
 
 export const pollRouter = createRouter()
   .query('get-all', {
-    async resolve() {
-      return await prisma.pollQuestion.findMany();
+    input: pollFilterValidator,
+    async resolve({ input: { filter }, ctx: { ownerToken } }) {
+      if (!ownerToken) throw new Error('Unauthorized');
+      //build prisma where statement
+      let where = {};
+      switch (filter) {
+        case 'Created':
+          where = { ownerToken };
+          break;
+        case 'Participated':
+          where = { Vote: { some: { voterToken: ownerToken } } };
+          break;
+        default:
+          where = {};
+          break;
+      }
+      return await prisma.pollQuestion.findMany({ where });
     },
   })
-  .query('get-all-by-user', {
+  .query('get-all-mine', {
     async resolve({ ctx: { ownerToken } }) {
-      if (!ownerToken) return [];
+      if (!ownerToken) throw new Error('Unauthorized');
       return await prisma.pollQuestion.findMany({
         where: { ownerToken },
+      });
+    },
+  })
+  .query('get-all-particapated', {
+    async resolve({ ctx: { ownerToken } }) {
+      if (!ownerToken) throw new Error('Unauthorized');
+      return await prisma.pollQuestion.findMany({
+        where: { Vote: { some: { voterToken: ownerToken } } },
       });
     },
   })
@@ -29,7 +53,7 @@ export const pollRouter = createRouter()
       const myVotes = await prisma.vote.findMany({
         where: { pollId: id, voterToken: ctx.ownerToken },
       });
-      let votes = await prisma.vote.groupBy({
+      const votes = await prisma.vote.groupBy({
         where: { pollId: id },
         by: ['choice'],
         _count: true,

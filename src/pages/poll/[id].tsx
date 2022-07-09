@@ -1,12 +1,12 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { Layout } from '../../components/layout';
+
 import { trpc } from '../../utils/trpc';
 
 const Poll: NextPage = () => {
   const {
-    query: { id, options },
+    query: { id },
   } = useRouter();
   if (!id || typeof id !== 'string') return <div>No ID</div>;
   const client = trpc.useContext();

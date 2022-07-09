@@ -1,29 +1,22 @@
-import { PollQuestion } from '@prisma/client';
-import type { NextPage } from 'next';
-import Head from 'next/head';
-import Link, { LinkProps } from 'next/link';
-import React, {
-  forwardRef,
-  Fragment,
-  HTMLProps,
-  RefAttributes,
-  useState,
-} from 'react';
-import { Layout } from '../components/layout';
-import { trpc } from '../utils/trpc';
-import { Menu, Transition } from '@headlessui/react';
-import { Listbox } from '@headlessui/react';
+import { Menu, Transition, Listbox } from '@headlessui/react';
 import {
   DotsVerticalIcon,
   TrashIcon,
   ChevronRightIcon,
 } from '@heroicons/react/solid';
+import { PollQuestion } from '@prisma/client';
+import type { NextPage } from 'next';
+import Link from 'next/link';
+import React, { useEffect, useRef, useState } from 'react';
+
+import { PollFilterValidatorType } from '../shared/poll-filter-validator';
+import { trpc } from '../utils/trpc';
 
 const PollCardContextMenu: React.FC<{ id: string }> = ({ id }) => {
   const context = trpc.useContext();
-  const { mutate, data, isLoading } = trpc.useMutation('polls.delete-by-id', {
+  const { mutate } = trpc.useMutation('polls.delete-by-id', {
     onSettled: () => {
-      context.invalidateQueries(['polls.get-all-by-user']);
+      context.invalidateQueries(['polls.get-all']);
     },
   });
   return (
@@ -68,10 +61,13 @@ const PollCardContextMenu: React.FC<{ id: string }> = ({ id }) => {
   );
 };
 
-const PollFilterList = () => {
-  const filters = ['Created', 'Participated'];
-  const [selectedFilter, setSelectedFilter] = useState(filters[0]);
-
+const PollFilterList: React.FC<{
+  filters: PollFilterValidatorType[];
+  selectedFilter: PollFilterValidatorType;
+  setSelectedFilter: React.Dispatch<
+    React.SetStateAction<PollFilterValidatorType>
+  >;
+}> = ({ filters, selectedFilter, setSelectedFilter }) => {
   return (
     <div className='flex items-center justify-center min-w-[130px]'>
       <div className='w-full max-w-xs mx-auto'>
@@ -84,11 +80,13 @@ const PollFilterList = () => {
             <>
               <div className='relative'>
                 <span className='inline-block w-full rounded-md shadow-sm'>
-                  <Listbox.Button className='text-zinc-900 cursor-default relative w-full rounded-md border border-zinc-300 bg-zinc-100 pl-3 pr-10 py-2 text-left focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition ease-in-out duration-150 sm:text-sm sm:leading-5'>
-                    <span className='block truncate'>{selectedFilter}</span>
+                  <Listbox.Button className='bg-zinc-500 text-zinc-300 cursor-default relative w-full rounded-md border border-zinc-500 pl-3 pr-10 py-2 text-left focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition ease-in-out duration-150 sm:text-sm sm:leading-5'>
+                    <span className='block truncate'>
+                      {selectedFilter.filter}
+                    </span>
                     <span className='absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none'>
                       <svg
-                        className='h-5 w-5 text-gray-400'
+                        className='h-5 w-5 text-zinc-300'
                         viewBox='0 0 20 20'
                         fill='none'
                         stroke='currentColor'>
@@ -108,29 +106,30 @@ const PollFilterList = () => {
                   leave='transition ease-in duration-100'
                   leaveFrom='opacity-100'
                   leaveTo='opacity-0'
-                  className='absolute mt-1 w-full rounded-md bg-zinc-100 shadow-lg z-20'>
+                  className='absolute mt-1 w-full rounded-md bg-zinc-500 shadow-lg z-20'>
                   <Listbox.Options
                     static
                     className='max-h-60 rounded-md py-1 text-base leading-6 shadow-xs overflow-auto focus:outline-none sm:text-sm sm:leading-5'>
-                    {filters.map((person) => (
-                      <Listbox.Option key={person} value={person}>
+                    {filters.map((filterObj) => (
+                      <Listbox.Option key={filterObj.filter} value={filterObj}>
                         {({ selected, active }) => (
                           <div
+                            onMouseEnter={() => {
+                              console.log({ filterObj, selected, active });
+                            }}
                             className={`${
-                              active
-                                ? 'text-zinc-100 bg-amber-600'
-                                : 'text-zinc-800'
+                              active ? ' bg-amber-600' : ''
                             } cursor-default select-none relative py-2 pl-8 pr-4`}>
                             <span
                               className={`${
                                 selected ? 'font-semibold' : 'font-normal'
                               } block truncate`}>
-                              {person}
+                              {filterObj.filter}
                             </span>
                             {selected && (
                               <span
                                 className={`${
-                                  active ? 'text-zinc-100' : 'text-amber-600'
+                                  active ? '0' : 'text-amber-600'
                                 } absolute inset-y-0 left-0 flex items-center pl-1.5`}>
                                 <svg
                                   className='h-5 w-5'
@@ -176,7 +175,21 @@ const PollCard: React.FC<PollQuestion> = ({ id, question }) => {
 };
 
 const Polls: NextPage = () => {
-  const { data, isLoading } = trpc.useQuery(['polls.get-all-by-user']);
+  const context = trpc.useContext();
+  const filters = useRef<PollFilterValidatorType[]>([
+    { filter: 'Created' },
+    { filter: 'Participated' },
+  ]);
+  const [selectedFilter, setSelectedFilter] = useState<PollFilterValidatorType>(
+    filters.current[0] || { filter: 'Created' }
+  );
+  const { data, isLoading } = trpc.useQuery([
+    'polls.get-all',
+    { filter: selectedFilter.filter },
+  ]);
+  useEffect(() => {
+    context.invalidateQueries('polls.get-all');
+  }, [context, selectedFilter.filter]);
   if (isLoading || !data) {
     return <div className='p-4 py-10'>Loading...</div>;
   }
@@ -193,9 +206,11 @@ const Polls: NextPage = () => {
       <div className='flex flex-col'>
         <div className='p-4 border-b border-zinc-300 last-of-type:border-0 flex justify-between'>
           <div className='text-xl font-bold'>Polls</div>
-          <PollFilterList />
+          <PollFilterList
+            {...{ filters: filters.current, selectedFilter, setSelectedFilter }}
+          />
         </div>
-        {data.map((poll, i, arr) => PollCard(poll))}
+        {data.map((poll) => PollCard(poll))}
       </div>
     </div>
   );

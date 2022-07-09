@@ -1,7 +1,7 @@
 // middleware.ts
+import { nanoid } from 'nanoid';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { nanoid } from 'nanoid';
 
 export function middleware(req: NextRequest) {
   if (req.cookies['poll-user-token']) return;
