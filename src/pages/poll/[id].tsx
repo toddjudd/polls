@@ -61,6 +61,7 @@ const Poll: NextPage = () => {
     );
   return (
     <div className='max-w-4xl flex-1 bg-zinc-600 m-8 rounded-lg border-t-4 border-amber-500'>
+      {/* <pre>{JSON.stringify({ isLoading, isMutating })}</pre> */}
       <div className='flex flex-col p-4 gap-4'>
         <div className='grid grid-cols-[1fr_auto]'>
           <Link key={id} href={`/poll/${id}`}>
@@ -78,7 +79,7 @@ const Poll: NextPage = () => {
                       {option.text}
                     </span>
                     <span className='text-sm font-medium'>
-                      {option.percentage}%
+                      {Math.round(option.percentage)}%
                     </span>
                   </div>
                   <div className='w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700'>
@@ -97,9 +98,9 @@ const Poll: NextPage = () => {
                     className={`flex justify-center w-full py-1 px-4 rounded-md ${
                       backgrounds.current?.[i % backgrounds.current?.length] ||
                       'bg-amber-500'
-                    } ${isLoading ? 'opacity-50' : ''}`}
+                    } ${isLoading || isMutating ? 'opacity-50' : ''}`}
                     onClick={() => {
-                      if (data?.hasVoted || isMutating) return;
+                      if (data?.hasVoted || isMutating || isLoading) return;
                       mutate({ pollId: id, choice: i });
                     }}>
                     <span className='text-base font-medium '>
