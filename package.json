@@ -10,6 +10,8 @@
     "prebuild": "prisma generate"
   },
   "dependencies": {
+    "@headlessui/react": "^1.6.6",
+    "@heroicons/react": "^1.0.6",
     "@hookform/resolvers": "^2.9.5",
     "@prisma/client": "^4.0.0",
     "@trpc/client": "^9.25.3",

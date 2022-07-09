@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import { ReactNode } from 'react';
+import { HomeIcon } from '@heroicons/react/solid';
 
 export const Layout: React.FC<{
   title: string;
@@ -29,7 +30,17 @@ export const Layout: React.FC<{
           </Link>
         </div>
       </nav>
-      <main className='bg-zinc-600 m-8 rounded-lg '>{children}</main>
+      <main className='grid grid-cols-[auto_1fr] justify-stretch max-w-6xl m-auto'>
+        <section className='w-[200px] flex felx-col p-4'>
+          <Link href='/'>
+            <span className='flex justify-center gap-4 w-full'>
+              <HomeIcon className='h-5 w-5 text-zinc-300' />
+              <span>Dashboard</span>
+            </span>
+          </Link>
+        </section>
+        <section>{children}</section>
+      </main>
     </div>
   );
 };

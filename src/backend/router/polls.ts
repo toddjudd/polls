@@ -68,6 +68,15 @@ export const pollRouter = createRouter()
         },
       });
     },
+  })
+  .mutation('delete-by-id', {
+    input: z.object({ id: z.string() }),
+    async resolve({ input: { id }, ctx }) {
+      if (!ctx.ownerToken) throw new Error('Unauthorized');
+      return await prisma.pollQuestion.delete({
+        where: { id },
+      });
+    },
   });
 
 // export type definition of API
