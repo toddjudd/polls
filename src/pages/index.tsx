@@ -13,7 +13,11 @@ import { Layout } from '../components/layout';
 import { trpc } from '../utils/trpc';
 import { Menu, Transition } from '@headlessui/react';
 import { Listbox } from '@headlessui/react';
-import { DotsVerticalIcon, TrashIcon } from '@heroicons/react/solid';
+import {
+  DotsVerticalIcon,
+  TrashIcon,
+  ChevronRightIcon,
+} from '@heroicons/react/solid';
 
 // eslint-disable-next-line react/display-name
 const NextLink = forwardRef<
@@ -41,10 +45,6 @@ const PollCardContextMenu: React.FC<{ id: string }> = ({ id }) => {
       <Menu>
         {({ open }) => (
           <>
-            <Menu.Button className=' p-2 bg-zinc-500 rounded-full'>
-              <DotsVerticalIcon className='h-5 w-5 text-zinc-800 ' />
-            </Menu.Button>
-
             <Transition
               show={open}
               enter='transition ease-out duration-100'
@@ -56,7 +56,10 @@ const PollCardContextMenu: React.FC<{ id: string }> = ({ id }) => {
               className='relative z-10'>
               <Menu.Items
                 static
-                className='absolute right-0 w-40 mt-2 origin-top-right bg-zinc-500 border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none z-10 -translate-y-full'>
+                className='absolute top-0 right-0 w-40  origin-top-right bg-zinc-500 rounded-md shadow-lg outline-none z-10 -translate-y-2 translate-x-2'>
+                <Menu.Button className='px-4 py-3 flex justify-end w-full z-10'>
+                  <ChevronRightIcon className='h-5 w-5 text-zinc-800' />
+                </Menu.Button>
                 <Menu.Button
                   className='px-4 py-3 flex justify-between w-full z-10'
                   onClick={() => {
@@ -69,6 +72,9 @@ const PollCardContextMenu: React.FC<{ id: string }> = ({ id }) => {
                 </Menu.Button>
               </Menu.Items>
             </Transition>
+            <Menu.Button className='p-1 bg-zinc-500 rounded-full'>
+              <DotsVerticalIcon className='h-5 w-5 text-zinc-800 ' />
+            </Menu.Button>
           </>
         )}
       </Menu>
