@@ -43,6 +43,7 @@
     "ssr",
     "polls",
     "trpc",
-    "votes"
+    "votes",
+    "nav"
   ]
 }
