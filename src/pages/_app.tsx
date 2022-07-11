@@ -1,4 +1,5 @@
 import { withTRPC } from '@trpc/next';
+import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
 import superjson from 'superjson';
 
@@ -6,11 +7,13 @@ import '../styles/globals.css';
 import { AppRouter } from '../backend/router';
 import { Layout } from '../components/layout';
 
-const App = ({ Component, pageProps }: AppProps) => {
+const App = ({ Component, pageProps: { props, session } }: AppProps) => {
   return (
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>
+    <SessionProvider session={session}>
+      <Layout>
+        <Component {...props} />
+      </Layout>
+    </SessionProvider>
   );
 };
 

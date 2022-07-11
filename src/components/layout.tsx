@@ -1,4 +1,5 @@
 import { HomeIcon, ChatAlt2Icon } from '@heroicons/react/solid';
+import { signIn, signOut, useSession } from 'next-auth/react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { ReactNode } from 'react';
@@ -7,6 +8,7 @@ export const Layout: React.FC<{
   title?: string;
   children: ReactNode;
 }> = ({ title, children }) => {
+  const { data: session } = useSession();
   return (
     <div>
       <Head>
@@ -33,6 +35,11 @@ export const Layout: React.FC<{
           <Link href='/'>
             <span className='flex justify-center items-center'>View Polls</span>
           </Link>
+          {session ? (
+            <button onClick={() => signOut()}>{session.user?.name}</button>
+          ) : (
+            <button onClick={() => signIn()}>Sign In</button>
+          )}
         </div>
       </nav>
       <main className='grid grid-colls-1 lg:grid-cols-[auto_1fr] justify-stretch max-w-7xl m-auto'>
