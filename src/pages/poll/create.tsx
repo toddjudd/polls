@@ -149,45 +149,49 @@ const CreatePoll: React.FC = () => {
   const disabled = isSubmitting || isLoading || !!data;
 
   return (
-    <form
-      onSubmit={handleSubmit(onValid, (errors) => {
-        console.log(errors);
-      })}
-      className='grid gap-2 p-4'>
-      <label
-        htmlFor='question'
-        className='block mb-2 text-sm font-medium text-zinc-800 dark:text-zinc-200'>
-        Question
-      </label>
-      <input
-        {...register('question', { disabled })}
-        type='text'
-        className={errors.question ? inputErrorStyle : inputStyle}
-      />
-      {errors.question && (
-        <p className='text-red-400 text-sm'>{errors.question.message}</p>
-      )}
-      <label className='label'>
-        <span className='label-text font-semibold text-base'>Add options</span>
-      </label>
-      {errors.options?.message && (
-        <p className='text-red-400 text-sm'>{errors.options?.message}</p>
-      )}
-      <Options
-        control={control}
-        register={register}
-        errors={errors}
-        trigger={trigger}
-        disabled={disabled}
-        touchedFields={touchedFields}
-      />
-      <button
-        type='submit'
-        disabled={disabled}
-        className='bg-amber-500 hover:bg-amber-600 text-white rounded-sm p-1'>
-        {disabled ? 'Submitting..' : 'Submit'}
-      </button>
-    </form>
+    <div className='max-w-4xl flex-1 bg-zinc-600 m-8 rounded-lg '>
+      <form
+        onSubmit={handleSubmit(onValid, (errors) => {
+          console.log(errors);
+        })}
+        className='grid gap-2 p-4'>
+        <label
+          htmlFor='question'
+          className='block mb-2 text-sm font-medium text-zinc-800 dark:text-zinc-200'>
+          Question
+        </label>
+        <input
+          {...register('question', { disabled })}
+          type='text'
+          className={errors.question ? inputErrorStyle : inputStyle}
+        />
+        {errors.question && (
+          <p className='text-red-400 text-sm'>{errors.question.message}</p>
+        )}
+        <label className='label'>
+          <span className='label-text font-semibold text-base'>
+            Add options
+          </span>
+        </label>
+        {errors.options?.message && (
+          <p className='text-red-400 text-sm'>{errors.options?.message}</p>
+        )}
+        <Options
+          control={control}
+          register={register}
+          errors={errors}
+          trigger={trigger}
+          disabled={disabled}
+          touchedFields={touchedFields}
+        />
+        <button
+          type='submit'
+          disabled={disabled}
+          className='bg-amber-500 hover:bg-amber-600 text-white rounded-sm p-1'>
+          {disabled ? 'Submitting..' : 'Submit'}
+        </button>
+      </form>
+    </div>
   );
 };
 
