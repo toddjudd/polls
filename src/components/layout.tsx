@@ -1,6 +1,7 @@
 import { HomeIcon, ChatAlt2Icon } from '@heroicons/react/solid';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Head from 'next/head';
+import Image from 'next/image';
 import Link from 'next/link';
 import { ReactNode } from 'react';
 
@@ -12,7 +13,7 @@ export const Layout: React.FC<{
   return (
     <div>
       <Head>
-        <title>{title ? `${title} | ` : ''}Soda Vote</title>
+        <title>{title ? `${title} | Soda Vote` : 'Soda Vote'}</title>
         <meta
           name='description'
           content='A polling app used to learn Next.js'
@@ -35,8 +36,20 @@ export const Layout: React.FC<{
           <Link href='/'>
             <span className='flex justify-center items-center'>View Polls</span>
           </Link>
+          <span className='flex-1'></span>
           {session ? (
-            <button onClick={() => signOut()}>{session.user?.name}</button>
+            <div className='flex  justify-center  items-center rounded-full border-[3px] border-amber-500 self-center'>
+              <Image
+                src={session.user?.image || ''}
+                height={50}
+                width={50}
+                alt='user image'
+                className='rounded-full border-2 border-amber-500'
+                onClick={() => {
+                  signOut();
+                }}
+              />
+            </div>
           ) : (
             <button onClick={() => signIn()}>Sign In</button>
           )}
