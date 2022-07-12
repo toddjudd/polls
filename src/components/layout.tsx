@@ -49,7 +49,11 @@ const AuthNav = () => {
                     />
                   </div>
                 </Menu.Button>
-                <Menu.Button className='px-4 py-3 flex justify-between w-full z-10'>
+                <Menu.Button
+                  className='px-4 py-3 flex justify-between w-full z-10'
+                  onClick={() => {
+                    signOut();
+                  }}>
                   <p className='text-sm text-amber-500 font-medium leading-5 truncate'>
                     Sign Out
                   </p>

@@ -1,38 +1,29 @@
 import { withTRPC } from '@trpc/next';
 import { SessionProvider } from 'next-auth/react';
-import type { AppProps } from 'next/app';
+import { AppType } from 'next/dist/shared/lib/utils';
 import superjson from 'superjson';
 
 import '../styles/globals.css';
-import { AppRouter } from '../backend/router';
 import { Layout } from '../components/layout';
+import { AppRouter } from '../server/router';
 
-const App = ({ Component, pageProps: { props, session } }: AppProps) => {
+const App: AppType = ({ Component, pageProps: { session, ...pageProps } }) => {
   return (
     <SessionProvider session={session}>
       <Layout>
-        <Component {...props} />
+        <Component {...pageProps} />
       </Layout>
     </SessionProvider>
   );
 };
 
-function getBaseUrl() {
-  // console.group('getBaseUrl');
-  // console.log({
-  //   window: typeof window,
-  //   vercel: process.env.VERCEL_URL,
-  //   nextVercel: process.env.NEXT_PUBLIC_VERCEL_URL,
-  //   localhost: `http://localhost:${process.env.PORT || 3000}`,
-  // });
-  // console.groupEnd();
-
+const getBaseUrl = () => {
   if (typeof window !== 'undefined') return '';
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
   if (process.env.NEXT_PUBLIC_VERCEL_URL)
     return `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`;
   return `http://localhost:${process.env.PORT || 3000}`;
-}
+};
 
 export default withTRPC<AppRouter>({
   config({ ctx }) {
