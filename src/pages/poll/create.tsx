@@ -24,25 +24,6 @@ const inputStyle =
 const inputErrorStyle =
   'border border-red-500 text-red-900 placeholder-red-700  text-sm rounded-lg  block w-full p-2.5 dark:bg-zinc-600 dark:text-white dark:focus:ring-amber-500 dark:focus:border-amber-500 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500';
 
-const InputWithButton = () => {
-  return (
-    <div className='relative'>
-      <div className='flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none'></div>
-      <input
-        type='search'
-        id='search'
-        className='block p-4 pl-10 w-full text-sm text-zinc-800 bg-zinc-50 rounded-lg border border-zinc-200 focus:ring-amber-500 focus:border-amber-500 dark:bg-zinc-600 dark:border-zinc-500 dark:placeholder-zinc-300 dark:text-white dark:focus:ring-amber-500 dark:focus:border-amber-500'
-        placeholder='Search'
-        required
-      />
-      <button
-        type='submit'
-        className='text-white absolute right-2.5 bottom-2.5 bg-amber-500 hover:bg-amber-600 focus:ring-4 focus:outline-none focus:ring-amber-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-amber-500 dark:hover:bg-amber-600 dark:focus:ring-amber-800'>
-        Search
-      </button>
-    </div>
-  );
-};
 const Button = ({ children, ...props }: any) => {
   return (
     <button
@@ -104,7 +85,7 @@ const Options: React.FC<{
           if (errors.options?.message) trigger('options');
         }}
         disabled={disabled}>
-        <MinusCircleIcon className='h-4 w-4 text-zinc-300' />
+        <PlusCircleIcon className='h-4 w-4 text-zinc-300' />
       </Button>
     </div>
   );

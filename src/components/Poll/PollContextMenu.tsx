@@ -7,7 +7,10 @@ import {
 
 import { trpc } from '../../utils/trpc';
 
-const PollContextMenu: React.FC<{ id: string }> = ({ id }) => {
+const PollContextMenu: React.FC<{ id: string; isOwner: boolean }> = ({
+  id,
+  isOwner,
+}) => {
   const context = trpc.useContext();
   const { mutate } = trpc.useMutation('polls.delete-by-id', {
     onSettled: () => {
@@ -34,16 +37,18 @@ const PollContextMenu: React.FC<{ id: string }> = ({ id }) => {
                 <Menu.Button className='px-4 py-3 flex justify-end w-full z-10'>
                   <ChevronRightIcon className='h-5 w-5 ' />
                 </Menu.Button>
-                <Menu.Button
-                  className='px-4 py-3 flex justify-between w-full z-10'
-                  onClick={() => {
-                    mutate({ id });
-                  }}>
-                  <p className='text-sm text-red-400 font-medium leading-5 truncate'>
-                    Delete
-                  </p>
-                  <TrashIcon className='h-5 w-5 text-red-400' />
-                </Menu.Button>
+                {isOwner && (
+                  <Menu.Button
+                    className='px-4 py-3 flex justify-between w-full z-10'
+                    onClick={() => {
+                      mutate({ id });
+                    }}>
+                    <p className='text-sm text-red-400 font-medium leading-5 truncate'>
+                      Delete
+                    </p>
+                    <TrashIcon className='h-5 w-5 text-red-400' />
+                  </Menu.Button>
+                )}
               </Menu.Items>
             </Transition>
             <Menu.Button className='p-1'>

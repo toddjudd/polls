@@ -11,6 +11,7 @@ export const authRouter = createRouter()
   .middleware(async ({ ctx, next }) => {
     // Any queries or mutations after this middleware will
     // raise an error unless there is a current session
+    console.log('TRPC Auth middleware: ctx', ctx);
     if (!ctx.session) {
       throw new TRPCError({ code: 'UNAUTHORIZED' });
     }

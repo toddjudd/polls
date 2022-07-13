@@ -67,7 +67,7 @@ const Poll: NextPage = () => {
           <Link key={id} href={`/poll/${id}`}>
             <div className='text-xl font-bold'>{data?.question}</div>
           </Link>
-          <PollContextMenu id={id} />
+          <PollContextMenu id={id} isOwner={data.isOwner} />
         </div>
         <div className='grid gap-4 px-24 '>
           {data?.voteResults?.map((option, i) => (

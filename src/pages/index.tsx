@@ -61,9 +61,6 @@ const PollFilterList: React.FC<{
                       <Listbox.Option key={filterObj.filter} value={filterObj}>
                         {({ selected, active }) => (
                           <div
-                            onMouseEnter={() => {
-                              console.log({ filterObj, selected, active });
-                            }}
                             className={`${
                               active ? ' bg-amber-600' : ''
                             } cursor-default select-none relative py-2 pl-8 pr-4`}>
@@ -106,7 +103,11 @@ const PollFilterList: React.FC<{
   );
 };
 
-const PollCard: React.FC<PollQuestion> = ({ id, question }) => {
+const PollCard: React.FC<PollQuestion & { isOwner: boolean }> = ({
+  id,
+  question,
+  isOwner,
+}) => {
   return (
     <div
       key={id}
@@ -115,7 +116,7 @@ const PollCard: React.FC<PollQuestion> = ({ id, question }) => {
         <Link key={id} href={`/poll/${id}`}>
           <div className='text-xl font-bold'>{question}</div>
         </Link>
-        <PollContextMenu id={id} />
+        <PollContextMenu id={id} isOwner={isOwner} />
       </div>
     </div>
   );
@@ -125,6 +126,7 @@ const Polls: NextPage = () => {
   const context = trpc.useContext();
   const filters = useRef<PollFilterValidatorType[]>([
     { filter: 'Created' },
+    { filter: 'Public' },
     { filter: 'Participated' },
   ]);
   const [selectedFilter, setSelectedFilter] = useState<PollFilterValidatorType>(
