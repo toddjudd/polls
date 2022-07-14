@@ -18,24 +18,28 @@ model PollQuestion {
   description String    @default("") @db.VarChar(5000)
   endsAt      DateTime?
   options     Json
-  ownerToken  String    @db.VarChar(255)
+  ownerToken  String?   @db.VarChar(255)
+  userId      String?
+  user        User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @default(now())
   Vote        Vote[]
 
-  @@index([ownerToken])
+  @@index([ownerToken, userId])
 }
 
 model Vote {
   id         String       @id @default(cuid())
   pollId     String
-  poll       PollQuestion @relation(fields: [pollId], references: [id])
+  poll       PollQuestion @relation(fields: [pollId], references: [id], onDelete: Cascade)
   choice     Int
-  voterToken String       @db.VarChar(255)
+  voterToken String?      @db.VarChar(255)
+  userId     String?
+  user       User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @default(now())
 
-  @@index([voterToken, pollId])
+  @@index([voterToken, userId, pollId])
 }
 
 // Necessary for Next auth
@@ -66,13 +70,15 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String         @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?        @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
+  PollQuestion  PollQuestion[]
+  Vote          Vote[]
 }
 
 model VerificationToken {

@@ -5,13 +5,13 @@ import { createRouter } from './context';
 export const authRouter = createRouter()
   .query('getSession', {
     resolve({ ctx }) {
-      return ctx.session;
+      return ctx.user;
     },
   })
   .middleware(async ({ ctx, next }) => {
     // Any queries or mutations after this middleware will
-    // raise an error unless there is a current session
-    if (!ctx.session) {
+    // raise an error unless there is a current user
+    if (!ctx.user) {
       throw new TRPCError({ code: 'UNAUTHORIZED' });
     }
     return next();
