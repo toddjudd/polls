@@ -45,6 +45,7 @@
     "trpc",
     "votes",
     "nav",
-    "auth"
+    "auth",
+    "lint"
   ]
 }

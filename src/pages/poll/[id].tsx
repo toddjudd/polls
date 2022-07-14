@@ -3,8 +3,7 @@ import { NextPage } from 'next';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react';
-import { infer } from 'zod';
+import { useRef, useState } from 'react';
 
 import PollContextMenu from '../../components/Poll/PollContextMenu';
 import { trpc } from '../../utils/trpc';
