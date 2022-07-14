@@ -125,8 +125,8 @@ const PollCard: React.FC<PollQuestion & { isOwner: boolean }> = ({
 const Polls: NextPage = () => {
   const context = trpc.useContext();
   const filters = useRef<PollFilterValidatorType[]>([
-    { filter: 'Created' },
     { filter: 'Public' },
+    { filter: 'Created' },
     { filter: 'Participated' },
   ]);
   const [selectedFilter, setSelectedFilter] = useState<PollFilterValidatorType>(
