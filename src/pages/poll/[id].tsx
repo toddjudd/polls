@@ -4,20 +4,33 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
+import { infer } from 'zod';
 
 import PollContextMenu from '../../components/Poll/PollContextMenu';
 import { trpc } from '../../utils/trpc';
 
-const Poll: NextPage = () => {
+const backgroundsSSR = [
+  'bg-amber-500',
+  'bg-purple-500',
+  'bg-indigo-500',
+  'bg-blue-500',
+  'bg-red-500',
+  'bg-green-500',
+];
+
+const Poll: NextPage<{ backgroundsSSR: typeof backgroundsSSR }> = ({
+  backgroundsSSR,
+}) => {
   const backgrounds = useRef(
-    [
-      'bg-amber-500',
-      'bg-purple-500',
-      'bg-indigo-500',
-      'bg-blue-500',
-      'bg-red-500',
-      'bg-green-500',
-    ].sort(() => Math.random() - 0.5)
+    backgroundsSSR ||
+      [
+        'bg-amber-500',
+        'bg-purple-500',
+        'bg-indigo-500',
+        'bg-blue-500',
+        'bg-red-500',
+        'bg-green-500',
+      ].sort(() => Math.random() - 0.5)
   );
   const {
     query: { id: rawId },
@@ -74,7 +87,6 @@ const Poll: NextPage = () => {
     <div className='flex flex-col p-8 gap-8 items-stretch'>
       {showWarning && !session.data && data?.isOwner && (
         <div className=' rounded-lg border-2 border-amber-500 bg-amber-300 bg-opacity-25 p-4 grid grid-cols-[auto_1fr_auto] gap-x-4 self-center'>
-          {' '}
           <ExclamationIcon
             className='text-yellow-500 row-span-2 self-center'
             height={30}
@@ -157,5 +169,11 @@ const Poll: NextPage = () => {
     </div>
   );
 };
+
+export async function getServerSideProps() {
+  return {
+    props: { backgroundsSSR: backgroundsSSR.sort(() => Math.random() - 0.5) },
+  };
+}
 
 export default Poll;
